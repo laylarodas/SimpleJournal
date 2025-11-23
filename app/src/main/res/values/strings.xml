@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">SimpleJournal</string>
+    <string name="home_toolbar_title">Mis entradas</string>
+    <string name="home_empty_state">Todavía no hay entradas. ¡Crea la primera!</string>
+    <string name="home_fab_content_description">Agregar nueva entrada</string>
+</resources>
