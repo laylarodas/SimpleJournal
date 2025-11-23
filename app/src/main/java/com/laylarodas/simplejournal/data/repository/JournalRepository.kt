@@ -1,5 +1,10 @@
 package com.laylarodas.simplejournal.data.repository
 
+/**
+ * Capa de repositorio: expone una API limpia para la app sin importar si los datos
+ * vienen de Firestore u otra fuente en el futuro.
+ */
+
 import com.laylarodas.simplejournal.data.model.JournalEntry
 import com.laylarodas.simplejournal.data.remote.JournalRemoteDataSource
 import kotlinx.coroutines.flow.Flow

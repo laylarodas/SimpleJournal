@@ -1,4 +1,5 @@
 <resources>
+    <!-- Textos visibles en la UI: títulos, mensajes de ayuda y errores -->
     <string name="app_name">SimpleJournal</string>
     <string name="home_toolbar_title">Mis entradas</string>
     <string name="home_empty_state">Todavía no hay entradas. ¡Crea la primera!</string>

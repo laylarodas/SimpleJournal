@@ -7,6 +7,7 @@
     android:padding="16dp"
     tools:context=".ui.detail.EntryDetailActivity">
 
+    <!-- Toolbar con botón back para cerrar el editor -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/detailToolbar"
         android:layout_width="0dp"
@@ -17,6 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Campo para capturar el título de la entrada -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/titleLayout"
         android:layout_width="0dp"
@@ -36,6 +38,7 @@
             tools:text="Gratitude notes" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Campo multiline que permite escribir la reflexión completa -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/contentLayout"
         android:layout_width="0dp"
@@ -59,6 +62,7 @@
             tools:text="Today I had a calm walk at sunset..." />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Botón que dispara el guardado a través del ViewModel -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonSave"
         android:layout_width="0dp"

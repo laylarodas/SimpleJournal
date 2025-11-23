@@ -1,5 +1,10 @@
 package com.laylarodas.simplejournal.data.remote
 
+/**
+ * Fuente de datos remota: se encarga de leer/escribir en Cloud Firestore
+ * y ofrecer Flows para escuchar cambios en tiempo real.
+ */
+
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.laylarodas.simplejournal.data.model.JournalEntry

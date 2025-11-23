@@ -1,5 +1,10 @@
 package com.laylarodas.simplejournal.ui.main
 
+/**
+ * Adapter que conecta la lista de JournalEntry con el RecyclerView de la pantalla principal.
+ * Usa ListAdapter para aplicar DiffUtil automáticamente y solo redibujar los ítems que cambian.
+ */
+
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -24,6 +29,9 @@ class JournalAdapter :
     class JournalViewHolder(
         private val binding: ItemJournalEntryBinding
     ) : RecyclerView.ViewHolder(binding.root) {
+        /**
+         * Pinta un JournalEntry en la tarjeta: muestra título, resumen del cuerpo y fecha formateada.
+         */
         fun bind(entry: JournalEntry) {
             binding.entryTitle.text = entry.title.ifBlank { "Sin título" }
             binding.entryBody.text = entry.content.ifBlank { "..." }

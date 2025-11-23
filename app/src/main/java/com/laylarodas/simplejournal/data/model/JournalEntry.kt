@@ -1,5 +1,10 @@
 package com.laylarodas.simplejournal.data.model
 
+/**
+ * Representa una entrada del diario tal como se guarda en Firestore.
+ * Incluye helpers para formatear la fecha y convertir a Map (para subir/persistir).
+ */
+
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale

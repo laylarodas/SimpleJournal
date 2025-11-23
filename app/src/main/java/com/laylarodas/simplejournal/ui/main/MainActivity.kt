@@ -1,5 +1,10 @@
 package com.laylarodas.simplejournal.ui.main
 
+/**
+ * Pantalla principal: observa el estado del JournalViewModel y muestra la lista de entradas
+ * con un RecyclerView. También abre el editor cuando el usuario toca el FAB.
+ */
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels

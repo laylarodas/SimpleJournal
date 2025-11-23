@@ -1,5 +1,12 @@
 package com.laylarodas.simplejournal.viewmodel
 
+/**
+ * Mantiene el estado de la pantalla principal:
+ * - Garantiza que exista una sesión (anónima o real).
+ * - Escucha los cambios de Auth y de la colección en Firestore.
+ * - Expone un StateFlow con lista de entradas, loading y mensajes.
+ */
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -30,6 +37,9 @@ class JournalViewModel(
         observeAuth()
     }
 
+    /**
+     * Se asegura de que exista un usuario autenticado para poder leer/escribir en Firestore.
+     */
     private fun ensureSession() {
         viewModelScope.launch {
             if (authManager.currentUserId() == null) {
@@ -46,6 +56,9 @@ class JournalViewModel(
         }
     }
 
+    /**
+     * Observa los cambios del usuario autenticado y arranca o detiene el stream de entradas.
+     */
     private fun observeAuth() {
         viewModelScope.launch {
             authManager.authState.collect { user ->
@@ -65,6 +78,9 @@ class JournalViewModel(
         }
     }
 
+    /**
+     * Suscribe el repositorio a los cambios de Firestore para el usuario dado.
+     */
     private fun startListening(userId: String) {
         entriesJob?.cancel()
         entriesJob = viewModelScope.launch {
@@ -90,6 +106,9 @@ class JournalViewModel(
         }
     }
 
+    /**
+     * Limpia el mensaje mostrado en la UI para evitar repetir Snackbars.
+     */
     fun clearMessage() {
         _uiState.update { it.copy(message = null) }
     }

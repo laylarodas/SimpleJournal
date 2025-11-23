@@ -1,5 +1,11 @@
 package com.laylarodas.simplejournal.viewmodel
 
+/**
+ * Gestiona el formulario de creación/edición:
+ * valida datos, llama al repositorio y expone flags para habilitar el botón,
+ * mostrar errores y cerrar la pantalla cuando termina.
+ */
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -28,6 +34,9 @@ class EntryDetailViewModel(
         _uiState.update { it.copy(content = content) }
     }
 
+    /**
+     * Valida título y usuario, luego guarda la entrada en Firestore.
+     */
     fun saveEntry() {
         val current = _uiState.value
         if (current.title.isBlank()) {
@@ -82,6 +91,9 @@ class EntryDetailViewModel(
         _uiState.update { it.copy(message = null) }
     }
 
+    /**
+     * Marca el evento de cierre como consumido para que la Activity no se cierre dos veces.
+     */
     fun consumeCloseEvent() {
         _uiState.update { it.copy(closeScreen = false) }
     }

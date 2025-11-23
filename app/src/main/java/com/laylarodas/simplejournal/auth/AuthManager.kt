@@ -1,5 +1,10 @@
 package com.laylarodas.simplejournal.auth
 
+/**
+ * Encapsula FirebaseAuth para ofrecer operaciones de login y un Flow con el estado actual.
+ * Así el resto de la app no depende directamente del SDK.
+ */
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.awaitClose

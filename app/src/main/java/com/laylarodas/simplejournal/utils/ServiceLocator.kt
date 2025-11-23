@@ -1,5 +1,10 @@
 package com.laylarodas.simplejournal.utils
 
+/**
+ * Punto central para construir dependencias reales (FirebaseAuth, Firestore, repositorios).
+ * Evita tener que inicializar Firebase en cada Activity/ViewModel y facilita el futuro uso de DI.
+ */
+
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.laylarodas.simplejournal.auth.AuthManager

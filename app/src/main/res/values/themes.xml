@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!-- Tema global heredado de Material; más adelante podremos migrar a Material 3 -->
     <style name="Theme.SimpleJournal" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>

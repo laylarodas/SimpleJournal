@@ -1,5 +1,10 @@
 package com.laylarodas.simplejournal.ui.detail
 
+/**
+ * Pantalla para crear o editar una entrada. Conecta los campos de texto con el ViewModel
+ * y reacciona al estado (loading, errores, cierre del formulario).
+ */
+
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
