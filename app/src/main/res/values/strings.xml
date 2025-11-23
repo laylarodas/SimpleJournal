@@ -3,6 +3,7 @@
     <string name="home_toolbar_title">Mis entradas</string>
     <string name="home_empty_state">Todavía no hay entradas. ¡Crea la primera!</string>
     <string name="home_fab_content_description">Agregar nueva entrada</string>
+    <string name="home_subtitle">Escribe cómo te sientes y sigue tu progreso diario.</string>
     <string name="detail_toolbar_title">Journal entry</string>
     <string name="detail_title_hint">Title</string>
     <string name="detail_content_hint">What happened today?</string>
