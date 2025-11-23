@@ -2,34 +2,34 @@
 
 # SimpleJournal
 
-Kotlin + Firebase sample app for capturing daily journal entries with modern Android architecture.
+Kotlin + Firebase practice app for capturing daily journal entries with a modern Android stack.
 
 </div>
 
-## ✅ Objetivo
-SimpleJournal es un proyecto de práctica que replica el flujo básico de un diario digital:
-- Autenticación simple (inicio anónimo por ahora).
-- Lista de entradas en tiempo real usando Cloud Firestore.
-- ViewModel + LiveData para un estado reactivo.
-- Coroutines para llamadas asíncronas limpias.
+## ✅ Goal
+SimpleJournal mirrors the core flow of a digital diary:
+- Lightweight authentication (anonymous sign-in for now).
+- Real-time list of entries backed by Cloud Firestore.
+- ViewModel + LiveData to expose UI state safely.
+- Coroutines for clean, suspend-based async work.
 
-## 🧰 Stack
-- **Kotlin** + **ViewBinding** en una `Empty Activity`.
-- **Firebase Auth** + **Cloud Firestore** (via Firebase BoM).
+## 🧰 Tech stack
+- **Kotlin** + **ViewBinding** in an Empty Activity template.
+- **Firebase Auth** + **Cloud Firestore** through the Firebase BoM.
 - **Coroutines** (`kotlinx-coroutines-android` + Play Services).
 - **Lifecycle KTX** (`viewmodel-ktx`, `livedata-ktx`).
 - **Material Components**, **ConstraintLayout**, **RecyclerView**.
 
-## 🚀 Primeros pasos
-1. Clona el repo y abre en Android Studio Iguana o superior.
-2. Ejecuta **Gradle Sync**.
-3. Crea un proyecto en [Firebase Console](https://console.firebase.google.com/):
+## 🚀 Getting started
+1. Clone the repo and open it with Android Studio Iguana (or newer).
+2. Run **Gradle Sync**.
+3. Create a project in [Firebase Console](https://console.firebase.google.com/):
    - Package name: `com.laylarodas.simplejournal`.
-   - Descarga `google-services.json` y guárdalo en `app/google-services.json`.
-4. Habilita **Authentication (Email/Anonymous)** y **Cloud Firestore**.
-5. Ejecuta `Run > app` para verificar que compila y muestra la UI de prueba.
+   - Download `google-services.json` and copy it to `app/google-services.json`.
+4. Enable **Authentication** (Email + Anonymous) and **Cloud Firestore**.
+5. Run `app` to confirm the placeholder UI builds successfully.
 
-## 📁 Estructura sugerida
+## 📁 Suggested structure
 ```
 app/
  └── src/main/java/com/laylarodas/simplejournal
@@ -37,22 +37,22 @@ app/
      ├── data/
      │   ├── model/     # Data classes (JournalEntry)
      │   ├── remote/    # Firestore data sources
-     │   └── repository/# Repositorio principal
+     │   └── repository/# Main repository
      ├── ui/main/       # Activity + RecyclerView adapter
-     ├── utils/         # Service locator, constantes
+     ├── utils/         # Service locator, constants
      └── viewmodel/     # JournalViewModel
 ```
 
-## 📅 Roadmap MVP
-- [ ] Sign-in con email/password.
-- [ ] CRUD completo de entradas.
-- [ ] Sincronización bidireccional con Firestore.
-- [ ] Validaciones y mensajes de error amigables.
-- [ ] Tests unitarios (repositorio y ViewModel).
+## 📅 MVP roadmap
+- [ ] Email/password sign-in screen.
+- [ ] Full CRUD for journal entries.
+- [ ] Two-way sync with Firestore.
+- [ ] Friendly validation and error feedback.
+- [ ] Unit tests for repository and ViewModel.
 
-## 📝 Notas
-- `google-services.json` y archivos de claves quedan fuera del repo (ver `.gitignore`).
-- Se puede migrar a Jetpack Compose más adelante manteniendo el mismo backend.
+## 📝 Notes
+- `google-services.json` and signing keys stay outside the repo (see `.gitignore`).
+- We can migrate to Jetpack Compose later without changing the backend.
 
-Pull requests y mejoras son bienvenidos ✨
+Pull requests and improvements are welcome ✨
 
