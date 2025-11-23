@@ -1,5 +1,6 @@
 package com.laylarodas.simplejournal.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.laylarodas.simplejournal.databinding.ActivityMainBinding
+import com.laylarodas.simplejournal.ui.detail.EntryDetailActivity
 import com.laylarodas.simplejournal.utils.ServiceLocator
 import com.laylarodas.simplejournal.viewmodel.JournalViewModel
 import com.laylarodas.simplejournal.viewmodel.JournalViewModelFactory
@@ -68,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.fabAddEntry.setOnClickListener {
-            viewModel.onAddEntryTapped()
+            startActivity(Intent(this, EntryDetailActivity::class.java))
         }
     }
 }

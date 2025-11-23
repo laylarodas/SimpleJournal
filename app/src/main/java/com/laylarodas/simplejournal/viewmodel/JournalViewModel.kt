@@ -90,12 +90,6 @@ class JournalViewModel(
         }
     }
 
-    fun onAddEntryTapped() {
-        _uiState.update {
-            it.copy(message = "Pronto podrás crear nuevas entradas ✨")
-        }
-    }
-
     fun clearMessage() {
         _uiState.update { it.copy(message = null) }
     }
