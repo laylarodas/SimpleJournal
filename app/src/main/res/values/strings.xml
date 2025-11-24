@@ -14,4 +14,14 @@
     <string name="detail_auth_error">Sign in to save your thoughts.</string>
     <string name="detail_generic_error">Could not save your entry. Try again.</string>
     <string name="detail_saved_message">Entry saved!</string>
+    <!-- Auth -->
+    <string name="auth_title">¡Bienvenido de nuevo!</string>
+    <string name="auth_subtitle">Inicia sesión para seguir escribiendo tu diario.</string>
+    <string name="auth_email_hint">Correo electrónico</string>
+    <string name="auth_password_hint">Contraseña</string>
+    <string name="auth_login_button">Iniciar sesión</string>
+    <string name="auth_register_button">Crear cuenta</string>
+    <string name="auth_loading">Conectando...</string>
+    <string name="auth_invalid_email">Ingresa un correo válido.</string>
+    <string name="auth_invalid_password">Necesitas al menos 6 caracteres.</string>
 </resources>
