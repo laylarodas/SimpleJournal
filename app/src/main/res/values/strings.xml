@@ -24,4 +24,7 @@
     <string name="auth_loading">Conectando...</string>
     <string name="auth_invalid_email">Ingresa un correo válido.</string>
     <string name="auth_invalid_password">Necesitas al menos 6 caracteres.</string>
+    <string name="auth_generic_error">Algo salió mal. Intenta nuevamente.</string>
+    <string name="auth_success_login">Sesión iniciada.</string>
+    <string name="auth_success_register">Cuenta creada, ¡bienvenida!</string>
 </resources>
