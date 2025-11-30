@@ -7,6 +7,8 @@ package com.laylarodas.simplejournal.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -15,7 +17,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import com.laylarodas.simplejournal.R
 import com.laylarodas.simplejournal.databinding.ActivityMainBinding
+import com.laylarodas.simplejournal.ui.auth.LoginActivity
 import com.laylarodas.simplejournal.ui.detail.EntryDetailActivity
 import com.laylarodas.simplejournal.utils.ServiceLocator
 import com.laylarodas.simplejournal.viewmodel.JournalViewModel
@@ -26,11 +30,12 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private val journalAdapter by lazy { JournalAdapter() }
+    private val authManager by lazy { ServiceLocator.provideAuthManager() }
 
     private val viewModel: JournalViewModel by viewModels {
         JournalViewModelFactory(
             repository = ServiceLocator.provideJournalRepository(),
-            authManager = ServiceLocator.provideAuthManager()
+            authManager = authManager
         )
     }
 
@@ -43,6 +48,13 @@ class MainActivity : AppCompatActivity() {
         setupRecycler()
         observeUiState()
         setupListeners()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (authManager.currentUserId() == null) {
+            navigateToLogin()
+        }
     }
 
     private fun setupToolbar() {
@@ -77,6 +89,31 @@ class MainActivity : AppCompatActivity() {
         binding.fabAddEntry.setOnClickListener {
             startActivity(Intent(this, EntryDetailActivity::class.java))
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_home, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_logout -> {
+                authManager.signOut()
+                navigateToLogin()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun navigateToLogin() {
+        startActivity(
+            Intent(this, LoginActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+        )
+        finish()
     }
 }
 

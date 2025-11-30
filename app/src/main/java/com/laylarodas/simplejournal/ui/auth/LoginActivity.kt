@@ -1,5 +1,6 @@
 package com.laylarodas.simplejournal.ui.auth
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
 import com.laylarodas.simplejournal.R
 import com.laylarodas.simplejournal.databinding.ActivityLoginBinding
+import com.laylarodas.simplejournal.ui.main.MainActivity
 import com.laylarodas.simplejournal.utils.ServiceLocator
 import com.laylarodas.simplejournal.viewmodel.AuthViewModel
 import com.laylarodas.simplejournal.viewmodel.AuthViewModelFactory
@@ -22,9 +24,10 @@ import kotlinx.coroutines.launch
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+    private val authManager by lazy { ServiceLocator.provideAuthManager() }
 
     private val viewModel: AuthViewModel by viewModels {
-        AuthViewModelFactory(ServiceLocator.provideAuthManager())
+        AuthViewModelFactory(authManager)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +38,13 @@ class LoginActivity : AppCompatActivity() {
         setupInputs()
         setupListeners()
         observeState()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (authManager.currentUserId() != null) {
+            navigateToHome()
+        }
     }
 
     private fun setupInputs() {
@@ -71,9 +81,23 @@ class LoginActivity : AppCompatActivity() {
                         Snackbar.make(binding.root, text, Snackbar.LENGTH_LONG).show()
                         viewModel.clearMessage()
                     }
+
+                    if (state.navigateHome) {
+                        viewModel.consumeNavigation()
+                        navigateToHome()
+                    }
                 }
             }
         }
+    }
+
+    private fun navigateToHome() {
+        startActivity(
+            Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+        )
+        finish()
     }
 }
 

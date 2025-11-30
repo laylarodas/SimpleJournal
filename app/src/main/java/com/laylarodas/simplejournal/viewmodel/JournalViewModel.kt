@@ -2,8 +2,8 @@ package com.laylarodas.simplejournal.viewmodel
 
 /**
  * Mantiene el estado de la pantalla principal:
- * - Garantiza que exista una sesión (anónima o real).
- * - Escucha los cambios de Auth y de la colección en Firestore.
+ * - Observa la sesión actual (AuthState) y reacciona cuando cambia.
+ * - Escucha la colección en Firestore según el usuario autenticado.
  * - Expone un StateFlow con lista de entradas, loading y mensajes.
  */
 
@@ -33,27 +33,7 @@ class JournalViewModel(
     private var entriesJob: Job? = null
 
     init {
-        ensureSession()
         observeAuth()
-    }
-
-    /**
-     * Se asegura de que exista un usuario autenticado para poder leer/escribir en Firestore.
-     */
-    private fun ensureSession() {
-        viewModelScope.launch {
-            if (authManager.currentUserId() == null) {
-                runCatching { authManager.signInAnonymously() }
-                    .onFailure { throwable ->
-                        _uiState.update {
-                            it.copy(
-                                isLoading = false,
-                                message = throwable.localizedMessage ?: "No se pudo iniciar sesión anónima"
-                            )
-                        }
-                    }
-            }
-        }
     }
 
     /**
