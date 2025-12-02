@@ -35,10 +35,22 @@ class EntryDetailViewModel(
     }
 
     /**
-     * Valida título y usuario, luego guarda la entrada en Firestore.
+     * Guarda la entrada en Firestore.
+     *
+     * Flujo completo:
+     * 1. Validar que el título no esté vacío.
+     * 2. Obtener el userId del usuario autenticado.
+     * 3. Crear un objeto JournalEntry con los datos del formulario.
+     * 4. Llamar a repository.addEntry() dentro de una corrutina.
+     * 5. Si tiene éxito → mostrar mensaje y marcar closeScreen = true.
+     * 6. Si falla → mostrar el error en un Snackbar.
+     *
+     * La Activity observa closeScreen y llama finish() para volver a Home.
      */
     fun saveEntry() {
         val current = _uiState.value
+
+        // Paso 1: Validar título
         if (current.title.isBlank()) {
             _uiState.update {
                 it.copy(
@@ -49,6 +61,7 @@ class EntryDetailViewModel(
             return
         }
 
+        // Paso 2: Verificar sesión
         val userId = authManager.currentUserId()
         if (userId == null) {
             _uiState.update {
@@ -57,9 +70,11 @@ class EntryDetailViewModel(
             return
         }
 
+        // Paso 3-6: Guardar en Firestore
         viewModelScope.launch {
             _uiState.update { it.copy(isSaving = true, message = null, closeScreen = false) }
 
+            // Crear la entrada con los datos actuales
             val entry = JournalEntry(
                 title = current.title.trim(),
                 content = current.content.trim(),
@@ -67,6 +82,7 @@ class EntryDetailViewModel(
             )
 
             runCatching {
+                // Llamada al repositorio (suspende hasta que Firestore confirme)
                 repository.addEntry(userId, entry)
             }.onSuccess {
                 _uiState.update {

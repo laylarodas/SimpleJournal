@@ -62,33 +62,50 @@ class EntryDetailActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Conecta el botón "Guardar" con el ViewModel.
+     * Al hacer tap, el ViewModel valida y guarda en Firestore.
+     */
     private fun setupListeners() {
         binding.buttonSave.setOnClickListener {
             viewModel.saveEntry()
         }
     }
 
+    /**
+     * Observa el StateFlow del ViewModel y actualiza la UI en consecuencia.
+     *
+     * - isSaving: deshabilita el botón y muestra "Saving..."
+     * - showTitleError: muestra error en el campo de título.
+     * - message: muestra un Snackbar con el texto (éxito o error).
+     * - closeScreen: cuando es true, cierra esta Activity y vuelve a Home.
+     */
     private fun observeUiState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
+                    // Actualizar estado del botón
                     binding.buttonSave.isEnabled = !state.isSaving
                     binding.buttonSave.text = if (state.isSaving) {
                         getString(R.string.detail_saving_label)
                     } else {
                         getString(R.string.detail_save_button)
                     }
+
+                    // Mostrar error de título si aplica
                     binding.titleLayout.error = if (state.title.isBlank() && state.showTitleError) {
                         getString(R.string.detail_empty_title_error)
                     } else {
                         null
                     }
 
+                    // Mostrar mensaje en Snackbar
                     state.message?.let { message ->
                         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
                         viewModel.clearMessage()
                     }
 
+                    // Cerrar pantalla si el guardado fue exitoso
                     if (state.closeScreen) {
                         viewModel.consumeCloseEvent()
                         finish()
