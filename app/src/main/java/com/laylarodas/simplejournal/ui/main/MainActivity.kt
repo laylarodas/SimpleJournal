@@ -61,6 +61,13 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
     }
 
+    /**
+     * Configura el RecyclerView con un LinearLayoutManager vertical
+     * y le asigna el JournalAdapter.
+     *
+     * El Adapter usa ListAdapter + DiffUtil para actualizar eficientemente:
+     * solo redibuja los ítems que realmente cambiaron.
+     */
     private fun setupRecycler() {
         binding.journalRecycler.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
@@ -68,14 +75,33 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Observa el StateFlow del ViewModel y actualiza la UI cuando cambia.
+     *
+     * FLUJO DE ACTUALIZACIÓN EN TIEMPO REAL:
+     * 1. repeatOnLifecycle(STARTED) asegura que solo colectamos cuando la Activity es visible.
+     * 2. Cada vez que el ViewModel emite un nuevo JournalUiState, este bloque se ejecuta.
+     * 3. Actualizamos visibilidad del spinner y el empty state.
+     * 4. Llamamos submitList() que compara la lista anterior con la nueva usando DiffUtil.
+     * 5. DiffUtil calcula los cambios y el RecyclerView anima solo los ítems afectados.
+     *
+     * Resultado: cuando creas una entrada en el editor y vuelves aquí,
+     * la lista ya muestra la nueva entrada sin hacer nada extra.
+     */
     private fun observeUiState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
+                    // Mostrar/ocultar indicador de carga
                     binding.progressBar.isVisible = state.isLoading
+
+                    // Mostrar mensaje vacío si no hay entradas
                     binding.emptyView.isVisible = state.entries.isEmpty() && !state.isLoading
+
+                    // Actualizar la lista del Adapter (DiffUtil calcula los cambios)
                     journalAdapter.submitList(state.entries)
 
+                    // Mostrar mensaje temporal si existe
                     state.message?.let { message ->
                         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
                         viewModel.clearMessage()

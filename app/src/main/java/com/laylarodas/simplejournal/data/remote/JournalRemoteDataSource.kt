@@ -19,28 +19,50 @@ class JournalRemoteDataSource(
 ) {
 
     /**
-     * Escucha en tiempo real los documentos de la colección "journalEntries"
-     * filtrados por el userId. Cada vez que Firestore detecta un cambio
-     * (crear, editar, borrar), emite una nueva lista completa.
+     * Escucha cambios en tiempo real de la colección "journalEntries".
      *
-     * Usa callbackFlow para convertir el listener de Firestore en un Flow de Kotlin.
+     * ¿CÓMO FUNCIONA LA SINCRONIZACIÓN EN TIEMPO REAL?
+     * =================================================
+     * 1. addSnapshotListener() crea una conexión WebSocket con Firestore.
+     * 2. Firestore envía inmediatamente el estado actual de la query.
+     * 3. Cada vez que CUALQUIER documento que cumple la query cambia
+     *    (creado, editado o borrado), Firestore envía un nuevo snapshot.
+     * 4. Convertimos los documentos a JournalEntry y los emitimos via trySend().
+     * 5. El Flow nunca termina por sí solo; se mantiene escuchando hasta que
+     *    se cancele (awaitClose limpia el listener para evitar memory leaks).
+     *
+     * ¿POR QUÉ USAMOS callbackFlow?
+     * callbackFlow convierte callbacks tradicionales (como addSnapshotListener)
+     * en un Flow de Kotlin que se puede colectar con corrutinas.
+     *
+     * QUERY:
+     * - whereEqualTo(userId): solo entradas del usuario actual.
+     * - orderBy(timestamp, DESC): las más recientes primero.
      */
     fun streamEntries(userId: String): Flow<List<JournalEntry>> = callbackFlow {
+        // Construimos la query: entradas del usuario ordenadas por fecha
         val query = firestore.collection(FirestoreConstants.JOURNAL_COLLECTION)
             .whereEqualTo(FirestoreConstants.FIELD_USER_ID, userId)
             .orderBy(FirestoreConstants.FIELD_TIMESTAMP, com.google.firebase.firestore.Query.Direction.DESCENDING)
 
+        // Registramos el listener; Firestore llamará este callback cada vez que haya cambios
         val registration: ListenerRegistration = query.addSnapshotListener { snapshot, error ->
+            // Si hay error (ej: permisos, red), cerramos el Flow con la excepción
             error?.let {
                 close(it)
                 return@addSnapshotListener
             }
+
+            // Convertimos cada documento a JournalEntry
             val entries = snapshot?.documents?.map { document ->
                 JournalEntry.fromMap(document.id, document.data ?: emptyMap())
             }.orEmpty()
+
+            // Emitimos la lista al Flow (el ViewModel la recibirá)
             trySend(entries)
         }
 
+        // Cuando el Flow se cancela (ej: el ViewModel muere), removemos el listener
         awaitClose { registration.remove() }
     }
 
