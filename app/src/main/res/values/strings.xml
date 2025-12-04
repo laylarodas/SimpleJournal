@@ -15,6 +15,15 @@
     <string name="detail_auth_error">Sign in to save your thoughts.</string>
     <string name="detail_generic_error">Could not save your entry. Try again.</string>
     <string name="detail_saved_message">Entry saved!</string>
+    <string name="detail_delete_button">Delete</string>
+    <string name="detail_deleting_label">Deleting...</string>
+    <string name="detail_deleted_message">Entry deleted.</string>
+    <string name="detail_delete_confirm_title">Delete entry?</string>
+    <string name="detail_delete_confirm_message">This action cannot be undone.</string>
+    <string name="detail_delete_confirm_yes">Delete</string>
+    <string name="detail_delete_confirm_no">Cancel</string>
+    <string name="home_entry_deleted">Entry deleted.</string>
+    <string name="home_undo">Undo</string>
     <!-- Auth -->
     <string name="auth_title">¡Bienvenido de nuevo!</string>
     <string name="auth_subtitle">Inicia sesión para seguir escribiendo tu diario.</string>

@@ -133,6 +133,29 @@ class JournalViewModel(
     fun clearMessage() {
         _uiState.update { it.copy(message = null) }
     }
+
+    /**
+     * Elimina una entrada por su ID.
+     * Usado por swipe-to-delete en la lista.
+     *
+     * @param entryId ID del documento a eliminar.
+     * @param onComplete Callback opcional para manejar Undo.
+     */
+    fun deleteEntry(entryId: String, onComplete: ((Boolean) -> Unit)? = null) {
+        viewModelScope.launch {
+            runCatching {
+                repository.deleteEntry(entryId)
+            }.onSuccess {
+                _uiState.update { it.copy(message = "Entry deleted.") }
+                onComplete?.invoke(true)
+            }.onFailure { throwable ->
+                _uiState.update {
+                    it.copy(message = throwable.localizedMessage ?: "Could not delete entry.")
+                }
+                onComplete?.invoke(false)
+            }
+        }
+    }
 }
 
 /**

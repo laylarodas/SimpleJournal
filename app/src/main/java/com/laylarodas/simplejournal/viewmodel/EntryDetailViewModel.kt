@@ -182,6 +182,43 @@ class EntryDetailViewModel(
         }
     }
 
+    /**
+     * Elimina la entrada actual de Firestore.
+     *
+     * Solo funciona si estamos en modo edición (originalEntry != null).
+     * Tras eliminar, marca closeScreen = true para volver a Home.
+     */
+    fun deleteEntry() {
+        val entry = originalEntry
+        if (entry == null || entry.id.isBlank()) {
+            _uiState.update { it.copy(message = "Nothing to delete.") }
+            return
+        }
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isDeleting = true, message = null) }
+
+            runCatching {
+                repository.deleteEntry(entry.id)
+            }.onSuccess {
+                _uiState.update {
+                    it.copy(
+                        isDeleting = false,
+                        message = "Entry deleted.",
+                        closeScreen = true
+                    )
+                }
+            }.onFailure { throwable ->
+                _uiState.update {
+                    it.copy(
+                        isDeleting = false,
+                        message = throwable.localizedMessage ?: "Could not delete entry."
+                    )
+                }
+            }
+        }
+    }
+
     fun clearMessage() {
         _uiState.update { it.copy(message = null) }
     }
@@ -201,6 +238,7 @@ class EntryDetailViewModel(
  * @property content           Contenido actual en el campo de texto.
  * @property isLoading         True mientras carga una entrada existente.
  * @property isSaving          True mientras guarda en Firestore.
+ * @property isDeleting        True mientras elimina de Firestore.
  * @property isEditing         True si estamos editando (no creando).
  * @property showTitleError    True si el título está vacío y se intentó guardar.
  * @property shouldPopulateFields True cuando la Activity debe llenar los campos con los datos cargados.
@@ -212,6 +250,7 @@ data class EntryDetailUiState(
     val content: String = "",
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
+    val isDeleting: Boolean = false,
     val isEditing: Boolean = false,
     val showTitleError: Boolean = false,
     val shouldPopulateFields: Boolean = false,

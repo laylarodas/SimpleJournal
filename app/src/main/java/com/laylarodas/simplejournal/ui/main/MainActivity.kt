@@ -6,16 +6,21 @@ package com.laylarodas.simplejournal.ui.main
  */
 
 import android.content.Intent
+import android.graphics.Canvas
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.laylarodas.simplejournal.R
 import com.laylarodas.simplejournal.databinding.ActivityMainBinding
@@ -72,17 +77,85 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Configura el RecyclerView con un LinearLayoutManager vertical
-     * y le asigna el JournalAdapter.
+     * Configura el RecyclerView con un LinearLayoutManager vertical,
+     * el JournalAdapter, y swipe-to-delete.
      *
-     * El Adapter usa ListAdapter + DiffUtil para actualizar eficientemente:
-     * solo redibuja los ítems que realmente cambiaron.
+     * El Adapter usa ListAdapter + DiffUtil para actualizar eficientemente.
+     * El swipe permite eliminar entradas deslizando hacia la izquierda.
      */
     private fun setupRecycler() {
         binding.journalRecycler.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = journalAdapter
         }
+
+        // Configurar swipe-to-delete
+        setupSwipeToDelete()
+    }
+
+    /**
+     * Configura el gesto de deslizar para eliminar.
+     *
+     * FLUJO:
+     * 1. Usuario desliza una tarjeta hacia la izquierda.
+     * 2. Se pinta un fondo rojo mientras desliza (feedback visual).
+     * 3. Al soltar, se llama viewModel.deleteEntry().
+     * 4. La lista se actualiza automáticamente (real-time sync).
+     */
+    private fun setupSwipeToDelete() {
+        val swipeCallback = object : ItemTouchHelper.SimpleCallback(
+            0, // No soportamos drag & drop
+            ItemTouchHelper.LEFT // Solo swipe hacia la izquierda
+        ) {
+            // Fondo rojo que se muestra al deslizar
+            private val background = ColorDrawable(
+                ContextCompat.getColor(this@MainActivity, android.R.color.holo_red_light)
+            )
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false // No soportamos mover ítems
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.bindingAdapterPosition
+                if (position == RecyclerView.NO_POSITION) return
+
+                val entry = journalAdapter.currentList.getOrNull(position)
+                if (entry != null) {
+                    viewModel.deleteEntry(entry.id)
+                }
+            }
+
+            // Dibuja el fondo rojo mientras el usuario desliza
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+
+                // Solo dibujar fondo si estamos deslizando hacia la izquierda
+                if (dX < 0) {
+                    background.setBounds(
+                        itemView.right + dX.toInt(),
+                        itemView.top,
+                        itemView.right,
+                        itemView.bottom
+                    )
+                    background.draw(c)
+                }
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+            }
+        }
+
+        ItemTouchHelper(swipeCallback).attachToRecyclerView(binding.journalRecycler)
     }
 
     /**

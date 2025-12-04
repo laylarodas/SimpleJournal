@@ -7,12 +7,11 @@
     android:padding="16dp"
     tools:context=".ui.detail.EntryDetailActivity">
 
-    <!-- Toolbar con botón back para cerrar el editor -->
+    <!-- Toolbar con botón back para cerrar el editor (título se establece programáticamente) -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/detailToolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:title="@string/detail_toolbar_title"
         android:titleTextColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +43,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSave"
+        app:layout_constraintBottom_toTopOf="@+id/buttonsContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/titleLayout">
@@ -62,17 +61,41 @@
             tools:text="Today I had a calm walk at sunset..." />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Botón que dispara el guardado a través del ViewModel -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonSave"
+    <!-- Contenedor de botones: Delete (solo en modo edición) + Save -->
+    <LinearLayout
+        android:id="@+id/buttonsContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/detail_save_button"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- Botón eliminar: solo visible cuando editamos una entrada existente -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonDelete"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="@string/detail_delete_button"
+            android:visibility="gone"
+            app:strokeColor="@android:color/holo_red_dark"
+            android:textColor="@android:color/holo_red_dark"
+            tools:visibility="visible" />
+
+        <!-- Botón guardar: dispara el guardado a través del ViewModel -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/detail_save_button" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
