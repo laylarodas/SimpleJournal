@@ -1,8 +1,14 @@
 package com.laylarodas.simplejournal.ui.detail
 
 /**
- * Pantalla para crear o editar una entrada. Conecta los campos de texto con el ViewModel
- * y reacciona al estado (loading, errores, cierre del formulario).
+ * Pantalla para crear o editar una entrada.
+ *
+ * MODOS DE OPERACIÓN:
+ * - Sin EXTRA_ENTRY_ID: modo creación (nueva entrada).
+ * - Con EXTRA_ENTRY_ID: modo edición (carga datos existentes).
+ *
+ * Conecta los campos de texto con el ViewModel y reacciona al estado
+ * (loading, errores, cierre del formulario).
  */
 
 import android.os.Bundle
@@ -23,12 +29,26 @@ import kotlinx.coroutines.launch
 
 class EntryDetailActivity : AppCompatActivity() {
 
+    companion object {
+        /** Clave para pasar el ID de la entrada a editar via Intent. */
+        const val EXTRA_ENTRY_ID = "extra_entry_id"
+    }
+
     private lateinit var binding: ActivityEntryDetailBinding
+
+    /**
+     * Obtenemos el ID de la entrada del Intent (null si es nueva).
+     * Lo pasamos al Factory para que el ViewModel cargue los datos.
+     */
+    private val entryId: String? by lazy {
+        intent.getStringExtra(EXTRA_ENTRY_ID)
+    }
 
     private val viewModel: EntryDetailViewModel by viewModels {
         EntryDetailViewModelFactory(
             repository = ServiceLocator.provideJournalRepository(),
-            authManager = ServiceLocator.provideAuthManager()
+            authManager = ServiceLocator.provideAuthManager(),
+            entryId = entryId
         )
     }
 
@@ -43,9 +63,17 @@ class EntryDetailActivity : AppCompatActivity() {
         observeUiState()
     }
 
+    /**
+     * Configura el toolbar con título según el modo (crear/editar).
+     */
     private fun setupToolbar() {
         setSupportActionBar(binding.detailToolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = if (entryId != null) {
+            getString(R.string.detail_toolbar_title_edit)
+        } else {
+            getString(R.string.detail_toolbar_title_new)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -75,6 +103,7 @@ class EntryDetailActivity : AppCompatActivity() {
     /**
      * Observa el StateFlow del ViewModel y actualiza la UI en consecuencia.
      *
+     * - isLoading: muestra spinner mientras carga la entrada existente.
      * - isSaving: deshabilita el botón y muestra "Saving..."
      * - showTitleError: muestra error en el campo de título.
      * - message: muestra un Snackbar con el texto (éxito o error).
@@ -84,6 +113,19 @@ class EntryDetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
+                    // Mostrar/ocultar loading mientras carga la entrada
+                    binding.buttonSave.isVisible = !state.isLoading
+                    binding.titleLayout.isVisible = !state.isLoading
+                    binding.contentLayout.isVisible = !state.isLoading
+
+                    // Rellenar campos si el ViewModel cargó una entrada existente
+                    // (solo si el usuario no ha empezado a editar)
+                    if (state.shouldPopulateFields) {
+                        binding.inputTitle.setText(state.title)
+                        binding.inputContent.setText(state.content)
+                        viewModel.onFieldsPopulated()
+                    }
+
                     // Actualizar estado del botón
                     binding.buttonSave.isEnabled = !state.isSaving
                     binding.buttonSave.text = if (state.isSaving) {

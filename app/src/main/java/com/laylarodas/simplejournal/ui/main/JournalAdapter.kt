@@ -26,8 +26,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.laylarodas.simplejournal.data.model.JournalEntry
 import com.laylarodas.simplejournal.databinding.ItemJournalEntryBinding
 
-class JournalAdapter :
-    ListAdapter<JournalEntry, JournalAdapter.JournalViewHolder>(DIFF_CALLBACK) {
+/**
+ * @param onEntryClick Callback que se ejecuta cuando el usuario toca una entrada.
+ *                     Recibe el JournalEntry tocado para abrir el editor.
+ */
+class JournalAdapter(
+    private val onEntryClick: (JournalEntry) -> Unit = {}
+) : ListAdapter<JournalEntry, JournalAdapter.JournalViewHolder>(DIFF_CALLBACK) {
 
     /**
      * Crea un nuevo ViewHolder inflando el layout item_journal_entry.xml.
@@ -36,7 +41,7 @@ class JournalAdapter :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): JournalViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ItemJournalEntryBinding.inflate(inflater, parent, false)
-        return JournalViewHolder(binding)
+        return JournalViewHolder(binding, onEntryClick)
     }
 
     /**
@@ -52,8 +57,18 @@ class JournalAdapter :
      * Usar ViewBinding evita findViewById y mejora la seguridad de tipos.
      */
     class JournalViewHolder(
-        private val binding: ItemJournalEntryBinding
+        private val binding: ItemJournalEntryBinding,
+        private val onEntryClick: (JournalEntry) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        private var currentEntry: JournalEntry? = null
+
+        init {
+            // Configurar click listener una sola vez (más eficiente que en bind)
+            binding.root.setOnClickListener {
+                currentEntry?.let { entry -> onEntryClick(entry) }
+            }
+        }
 
         /**
          * Pinta los datos del JournalEntry en la tarjeta.
@@ -62,6 +77,7 @@ class JournalAdapter :
          * - Fecha: usa formattedDate() para mostrar "02 Dec 2025".
          */
         fun bind(entry: JournalEntry) {
+            currentEntry = entry
             binding.entryTitle.text = entry.title.ifBlank { "Sin título" }
             binding.entryBody.text = entry.content.ifBlank { "..." }
             binding.entryDate.text = entry.formattedDate()

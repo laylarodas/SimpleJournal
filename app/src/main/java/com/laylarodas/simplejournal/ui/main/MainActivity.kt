@@ -29,7 +29,17 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val journalAdapter by lazy { JournalAdapter() }
+
+    /**
+     * El Adapter recibe un callback para manejar clicks en las entradas.
+     * Cuando el usuario toca una entrada, abrimos el editor con su ID.
+     */
+    private val journalAdapter by lazy {
+        JournalAdapter { entry ->
+            openEntryDetail(entry.id)
+        }
+    }
+
     private val authManager by lazy { ServiceLocator.provideAuthManager() }
 
     private val viewModel: JournalViewModel by viewModels {
@@ -111,10 +121,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Configura el FAB para crear nuevas entradas.
+     * Abre el editor sin ID (modo creación).
+     */
     private fun setupListeners() {
         binding.fabAddEntry.setOnClickListener {
-            startActivity(Intent(this, EntryDetailActivity::class.java))
+            openEntryDetail(entryId = null)
         }
+    }
+
+    /**
+     * Abre el editor de entradas.
+     *
+     * @param entryId Si es null, abre en modo creación.
+     *                Si tiene valor, abre en modo edición con esa entrada.
+     */
+    private fun openEntryDetail(entryId: String?) {
+        val intent = Intent(this, EntryDetailActivity::class.java)
+        if (entryId != null) {
+            intent.putExtra(EntryDetailActivity.EXTRA_ENTRY_ID, entryId)
+        }
+        startActivity(intent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

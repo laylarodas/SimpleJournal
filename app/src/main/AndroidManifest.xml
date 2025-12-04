@@ -24,7 +24,7 @@
         <activity
             android:name=".ui.detail.EntryDetailActivity"
             android:exported="false"
-            android:label="@string/detail_toolbar_title"
+            android:label="@string/app_name"
             android:parentActivityName=".ui.main.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
