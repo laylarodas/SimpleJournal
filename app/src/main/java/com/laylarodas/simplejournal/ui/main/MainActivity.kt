@@ -176,10 +176,13 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     // Mostrar/ocultar indicador de carga
-                    binding.progressBar.isVisible = state.isLoading
+                    binding.loadingView.isVisible = state.isLoading
 
                     // Mostrar mensaje vacío si no hay entradas
                     binding.emptyView.isVisible = state.entries.isEmpty() && !state.isLoading
+
+                    // Mostrar/ocultar lista
+                    binding.journalRecycler.isVisible = state.entries.isNotEmpty()
 
                     // Actualizar la lista del Adapter (DiffUtil calcula los cambios)
                     journalAdapter.submitList(state.entries)

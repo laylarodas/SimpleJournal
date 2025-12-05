@@ -1,101 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Pantalla de detalle: Crear o editar una entrada.
+Incluye toolbar, campos de texto y botones de acción.
+-->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:background="?attr/colorBackground"
     tools:context=".ui.detail.EntryDetailActivity">
 
-    <!-- Toolbar con botón back para cerrar el editor (título se establece programáticamente) -->
+    <!-- Toolbar con botón back -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/detailToolbar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
-        android:titleTextColor="@android:color/white"
+        android:background="?attr/colorPrimary"
+        app:titleTextColor="?attr/colorOnPrimary"
+        app:navigationIconTint="?attr/colorOnPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Campo para capturar el título de la entrada -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/titleLayout"
+    <!-- Contenedor con scroll para los campos -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@id/buttonsContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/detailToolbar">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputTitle"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/detail_title_hint"
-            android:imeOptions="actionNext"
-            android:inputType="textCapSentences"
-            tools:text="Gratitude notes" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:orientation="vertical"
+            android:padding="16dp">
 
-    <!-- Campo multiline que permite escribir la reflexión completa -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/contentLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonsContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/titleLayout">
+            <!-- Campo título -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/titleLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputContent"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="top"
-            android:hint="@string/detail_content_hint"
-            android:imeOptions="actionDone"
-            android:inputType="textCapSentences|textMultiLine"
-            android:minLines="6"
-            android:paddingBottom="16dp"
-            tools:text="Today I had a calm walk at sunset..." />
-    </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/detail_title_hint"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    tools:text="Gratitude notes" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Contenedor de botones: Delete (solo en modo edición) + Save -->
+            <!-- Campo contenido (multiline expandible) -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/contentLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:hint="@string/detail_content_hint"
+                    android:inputType="textCapSentences|textMultiLine"
+                    android:minLines="8"
+                    tools:text="Today I had a calm walk at sunset and felt grateful for the little things in life..." />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- Contenedor de botones fijo en la parte inferior -->
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
+        android:background="?attr/colorSurface"
+        android:elevation="4dp"
         android:orientation="horizontal"
+        android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- Botón eliminar: solo visible cuando editamos una entrada existente -->
+        <!-- Botón eliminar: solo visible al editar -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonDelete"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginEnd="8dp"
+            android:layout_weight="1"
             android:text="@string/detail_delete_button"
+            android:textColor="?attr/colorError"
             android:visibility="gone"
-            app:strokeColor="@android:color/holo_red_dark"
-            android:textColor="@android:color/holo_red_dark"
+            app:strokeColor="?attr/colorError"
+            app:icon="@android:drawable/ic_menu_delete"
+            app:iconTint="?attr/colorError"
             tools:visibility="visible" />
 
-        <!-- Botón guardar: dispara el guardado a través del ViewModel -->
+        <!-- Botón guardar: acción principal -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSave"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/detail_save_button" />
+            android:text="@string/detail_save_button"
+            app:icon="@android:drawable/ic_menu_save"
+            app:iconGravity="textStart" />
 
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-

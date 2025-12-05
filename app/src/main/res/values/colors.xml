@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Paleta base generada por Android Studio; podemos personalizarla más adelante -->
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <!--
+    Paleta de colores para SimpleJournal.
+    Inspirada en tonos cálidos y acogedores para un diario personal.
+    
+    - Primary: Verde azulado oscuro (transmite calma y reflexión).
+    - Secondary: Ámbar cálido (acento para acciones importantes).
+    - Surface/Background: Tonos claros para buena legibilidad.
+    -->
+
+    <!-- Colores primarios (toolbar, FAB, botones principales) -->
+    <color name="primary">#2E7D6F</color>
+    <color name="primary_dark">#1B5E50</color>
+    <color name="primary_light">#4DB6A4</color>
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Colores secundarios (acentos, enlaces, iconos activos) -->
+    <color name="secondary">#F59E0B</color>
+    <color name="secondary_dark">#D97706</color>
+    <color name="on_secondary">#FFFFFF</color>
+
+    <!-- Superficies (cards, fondos de diálogos) -->
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#F5F5F5</color>
+    <color name="on_surface">#1C1B1F</color>
+    <color name="on_surface_variant">#49454F</color>
+
+    <!-- Fondo general de la app -->
+    <color name="background">#FAFAFA</color>
+    <color name="on_background">#1C1B1F</color>
+
+    <!-- Colores de estado -->
+    <color name="error">#B3261E</color>
+    <color name="on_error">#FFFFFF</color>
+    <color name="success">#2E7D32</color>
+
+    <!-- Colores auxiliares -->
+    <color name="outline">#79747E</color>
+    <color name="divider">#E0E0E0</color>
+
+    <!-- Colores legacy (para compatibilidad) -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

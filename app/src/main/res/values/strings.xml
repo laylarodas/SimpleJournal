@@ -3,6 +3,9 @@
     <string name="app_name">SimpleJournal</string>
     <string name="home_toolbar_title">Mis entradas</string>
     <string name="home_empty_state">Todavía no hay entradas. ¡Crea la primera!</string>
+    <string name="home_empty_title">Your journal is empty</string>
+    <string name="home_empty_description">Tap the + button below to write\nyour first entry.</string>
+    <string name="home_loading">Loading your entries…</string>
     <string name="home_fab_content_description">Agregar nueva entrada</string>
     <string name="home_subtitle">Escribe cómo te sientes y sigue tu progreso diario.</string>
     <string name="detail_toolbar_title_new">New entry</string>

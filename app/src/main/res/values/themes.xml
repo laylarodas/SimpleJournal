@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Tema global heredado de Material; más adelante podremos migrar a Material 3 -->
-    <style name="Theme.SimpleJournal" parent="android:Theme.Material.Light.NoActionBar" />
+    <!--
+    Tema principal de SimpleJournal usando Material 3.
+    
+    Material 3 (Material You) es el sistema de diseño actual de Android.
+    Define colores, tipografía y formas de manera centralizada.
+    
+    Los atributos colorPrimary, colorSecondary, etc. se aplican automáticamente
+    a los componentes de Material (Toolbar, FAB, Buttons, Cards, etc.).
+    -->
+
+    <style name="Theme.SimpleJournal" parent="Theme.Material3.Light.NoActionBar">
+        <!-- Colores primarios: toolbar, FAB, botones filled -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/on_primary</item>
+        <item name="colorPrimaryContainer">@color/primary_light</item>
+
+        <!-- Colores secundarios: acentos, switches activos -->
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/on_secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary</item>
+
+        <!-- Superficies: cards, bottom sheets, diálogos -->
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/on_surface</item>
+        <item name="colorSurfaceVariant">@color/surface_variant</item>
+        <item name="colorOnSurfaceVariant">@color/on_surface_variant</item>
+
+        <!-- Fondo general -->
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/on_background</item>
+
+        <!-- Estados de error -->
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/on_error</item>
+
+        <!-- Bordes y divisores -->
+        <item name="colorOutline">@color/outline</item>
+
+        <!-- Barra de estado (parte superior del sistema) -->
+        <item name="android:statusBarColor">@color/primary_dark</item>
+        <item name="android:navigationBarColor">@color/surface</item>
+    </style>
 </resources>

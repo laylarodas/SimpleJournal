@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Tarjeta individual usada por el RecyclerView para mostrar cada entrada -->
+<!--
+Tarjeta individual para cada entrada del diario.
+Usa Material 3 card con colores del tema.
+-->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="12dp"
+    android:layout_marginTop="8dp"
     android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="?attr/colorSurface"
+    app:cardCornerRadius="12dp"
     app:cardElevation="2dp"
-    app:cardUseCompatPadding="true">
+    app:rippleColor="?attr/colorPrimaryContainer">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,33 +23,39 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Título de la entrada -->
         <TextView
             android:id="@+id/entryTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-            android:textColor="@android:color/black"
-            tools:text="Título del día" />
+            android:textColor="?attr/colorOnSurface"
+            tools:text="Gratitude notes" />
 
+        <!-- Preview del contenido (máx 2 líneas) -->
         <TextView
             android:id="@+id/entryBody"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:maxLines="2"
             android:ellipsize="end"
+            android:maxLines="2"
             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
-            tools:text="Resumen rápido de lo que pasó hoy..." />
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="Today I had a calm walk at sunset and felt grateful for the little things..." />
 
+        <!-- Fecha formateada -->
         <TextView
             android:id="@+id/entryDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:textAppearance="@style/TextAppearance.Material3.LabelSmall"
             android:textColor="?attr/colorPrimary"
-            tools:text="22 Nov 2025" />
+            tools:text="05 Dec 2025" />
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
-

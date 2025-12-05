@@ -5,6 +5,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorBackground"
     tools:context=".ui.main.MainActivity">
 
     <!-- Barra superior con el título de la pantalla -->
@@ -13,36 +14,37 @@
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:title="@string/home_toolbar_title"
-        android:titleTextColor="@android:color/white"
+        app:title="@string/home_toolbar_title"
+        app:titleTextColor="?attr/colorOnPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Texto introductorio para guiar al usuario antes de ver la lista -->
+    <!-- Texto introductorio para guiar al usuario -->
     <TextView
         android:id="@+id/subtitleText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:text="@string/home_subtitle"
         android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSurfaceVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <!-- RecyclerView que mostrará las entradas descargadas desde Firestore -->
+    <!-- RecyclerView que mostrará las entradas desde Firestore -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/journalRecycler"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:paddingBottom="16dp"
+        android:paddingBottom="88dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,41 +52,99 @@
         app:layout_constraintTop_toBottomOf="@id/subtitleText"
         tools:listitem="@layout/item_journal_entry" />
 
-    <!-- Mensaje que aparece cuando no hay entradas cargadas todavía -->
-    <TextView
+    <!--
+    Empty State mejorado:
+    Se muestra cuando no hay entradas. Incluye ícono, título y descripción
+    para guiar al usuario sobre qué hacer.
+    -->
+    <LinearLayout
         android:id="@+id/emptyView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/home_empty_state"
-        android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subtitleText" />
+        app:layout_constraintTop_toBottomOf="@id/subtitleText"
+        tools:visibility="visible">
 
-    <!-- Indicador de carga mientras esperamos la respuesta del ViewModel -->
-    <ProgressBar
-        android:id="@+id/progressBar"
+        <!-- Ícono decorativo (libro/diario) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📔"
+            android:textSize="64sp" />
+
+        <!-- Título del empty state -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/home_empty_title"
+            android:textAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+            android:textColor="?attr/colorOnSurface" />
+
+        <!-- Descripción/instrucción -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text="@string/home_empty_description"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+    </LinearLayout>
+
+    <!--
+    Loading State mejorado:
+    Indicador de carga con mensaje para que el usuario sepa qué está pasando.
+    -->
+    <LinearLayout
+        android:id="@+id/loadingView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="32dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/subtitleText" />
+        app:layout_constraintTop_toBottomOf="@id/subtitleText"
+        tools:visibility="gone">
 
-    <!-- Botón principal para crear nuevas entradas -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:indeterminateTint="?attr/colorPrimary" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/home_loading"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+            android:textColor="?attr/colorOnSurfaceVariant" />
+
+    </LinearLayout>
+
+    <!-- FAB para crear nuevas entradas -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddEntry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/home_fab_content_description"
-        android:src="@android:drawable/ic_input_add"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
+        android:contentDescription="@string/home_fab_content_description"
+        app:srcCompat="@android:drawable/ic_input_add"
+        app:tint="?attr/colorOnPrimary"
+        app:backgroundTint="?attr/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
