@@ -3,6 +3,12 @@ package com.laylarodas.simplejournal.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.FirebaseTooManyRequestsException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.laylarodas.simplejournal.auth.AuthManager
 import com.laylarodas.simplejournal.R
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +19,19 @@ import kotlinx.coroutines.launch
 
 /**
  * Maneja el estado del login/registro: validaciones, llamadas a AuthManager y eventos de navegación.
+ *
+ * MANEJO DE ERRORES DE FIREBASE:
+ * ==============================
+ * Firebase Auth lanza diferentes tipos de excepciones según el error:
+ * - FirebaseAuthUserCollisionException → El email ya está registrado.
+ * - FirebaseAuthInvalidUserException → No existe cuenta con ese email.
+ * - FirebaseAuthInvalidCredentialsException → Contraseña incorrecta o email mal formado.
+ * - FirebaseAuthWeakPasswordException → Contraseña muy corta (menos de 6 caracteres).
+ * - FirebaseTooManyRequestsException → Demasiados intentos fallidos.
+ * - FirebaseNetworkException → Sin conexión a internet.
+ *
+ * El método mapFirebaseError() detecta el tipo de excepción y devuelve
+ * el recurso de string apropiado para mostrar un mensaje amigable al usuario.
  */
 class AuthViewModel(
     private val authManager: AuthManager
@@ -92,13 +111,55 @@ class AuthViewModel(
         _uiState.update { it.copy(isLoading = isLoading, messageRes = null, navigateHome = false) }
     }
 
+    /**
+     * Detecta el tipo de error de Firebase y muestra un mensaje específico.
+     *
+     * Esto mejora la experiencia del usuario porque:
+     * - Si el email ya existe → le sugerimos iniciar sesión.
+     * - Si la contraseña es incorrecta → le decimos exactamente eso.
+     * - Si no hay conexión → le pedimos que verifique su red.
+     *
+     * En lugar de mostrar siempre "Algo salió mal", el usuario sabe
+     * exactamente qué corregir.
+     */
     private fun emitError(throwable: Throwable) {
+        val errorRes = mapFirebaseError(throwable)
         _uiState.update {
             it.copy(
                 isLoading = false,
-                messageRes = R.string.auth_generic_error,
-                messageArg = throwable.localizedMessage
+                messageRes = errorRes
             )
+        }
+    }
+
+    /**
+     * Mapea excepciones de Firebase Auth a recursos de string.
+     *
+     * @param throwable La excepción lanzada por Firebase.
+     * @return ID del recurso de string con el mensaje apropiado.
+     */
+    private fun mapFirebaseError(throwable: Throwable): Int {
+        return when (throwable) {
+            // El correo ya está registrado con otra cuenta
+            is FirebaseAuthUserCollisionException -> R.string.auth_error_email_in_use
+
+            // No existe una cuenta con ese correo
+            is FirebaseAuthInvalidUserException -> R.string.auth_error_user_not_found
+
+            // Contraseña incorrecta o credenciales inválidas
+            is FirebaseAuthInvalidCredentialsException -> R.string.auth_error_invalid_credential
+
+            // Contraseña muy débil (menos de 6 caracteres)
+            is FirebaseAuthWeakPasswordException -> R.string.auth_error_weak_password
+
+            // Demasiados intentos fallidos (rate limiting)
+            is FirebaseTooManyRequestsException -> R.string.auth_error_too_many_requests
+
+            // Sin conexión a internet
+            is FirebaseNetworkException -> R.string.auth_error_network
+
+            // Cualquier otro error desconocido
+            else -> R.string.auth_generic_error
         }
     }
 

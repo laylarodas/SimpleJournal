@@ -174,9 +174,9 @@ class EntryDetailActivity : AppCompatActivity() {
                         null
                     }
 
-                    // Mostrar mensaje en Snackbar
-                    state.message?.let { message ->
-                        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    // Mostrar mensaje en Snackbar (usando getString para obtener el texto localizado)
+                    state.messageRes?.let { resId ->
+                        Snackbar.make(binding.root, getString(resId), Snackbar.LENGTH_LONG).show()
                         viewModel.clearMessage()
                     }
 

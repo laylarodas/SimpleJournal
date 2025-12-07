@@ -1,44 +1,92 @@
 <resources>
-    <!-- Textos visibles en la UI: títulos, mensajes de ayuda y errores -->
+    <!-- ============================== -->
+    <!-- GENERAL                        -->
+    <!-- ============================== -->
     <string name="app_name">SimpleJournal</string>
+
+    <!-- ============================== -->
+    <!-- HOME SCREEN                    -->
+    <!-- ============================== -->
     <string name="home_toolbar_title">Mis entradas</string>
-    <string name="home_empty_state">Todavía no hay entradas. ¡Crea la primera!</string>
-    <string name="home_empty_title">Your journal is empty</string>
-    <string name="home_empty_description">Tap the + button below to write\nyour first entry.</string>
-    <string name="home_loading">Loading your entries…</string>
-    <string name="home_fab_content_description">Agregar nueva entrada</string>
     <string name="home_subtitle">Escribe cómo te sientes y sigue tu progreso diario.</string>
-    <string name="detail_toolbar_title_new">New entry</string>
-    <string name="detail_toolbar_title_edit">Edit entry</string>
-    <string name="detail_title_hint">Title</string>
-    <string name="detail_content_hint">What happened today?</string>
-    <string name="detail_save_button">Save entry</string>
-    <string name="detail_saving_label">Saving...</string>
-    <string name="detail_empty_title_error">Please give your entry a title.</string>
-    <string name="detail_auth_error">Sign in to save your thoughts.</string>
-    <string name="detail_generic_error">Could not save your entry. Try again.</string>
-    <string name="detail_saved_message">Entry saved!</string>
-    <string name="detail_delete_button">Delete</string>
-    <string name="detail_deleting_label">Deleting...</string>
-    <string name="detail_deleted_message">Entry deleted.</string>
-    <string name="detail_delete_confirm_title">Delete entry?</string>
-    <string name="detail_delete_confirm_message">This action cannot be undone.</string>
-    <string name="detail_delete_confirm_yes">Delete</string>
-    <string name="detail_delete_confirm_no">Cancel</string>
-    <string name="home_entry_deleted">Entry deleted.</string>
-    <string name="home_undo">Undo</string>
-    <!-- Auth -->
+    <string name="home_fab_content_description">Agregar nueva entrada</string>
+    <string name="home_menu_logout">Cerrar sesión</string>
+
+    <!-- Empty state -->
+    <string name="home_empty_state">Todavía no hay entradas. ¡Crea la primera!</string>
+    <string name="home_empty_title">Tu diario está vacío</string>
+    <string name="home_empty_description">Toca el botón + para escribir\ntu primera entrada.</string>
+
+    <!-- Loading state -->
+    <string name="home_loading">Cargando tus entradas…</string>
+
+    <!-- Messages -->
+    <string name="home_entry_deleted">Entrada eliminada.</string>
+    <string name="home_undo">Deshacer</string>
+    <string name="home_error_loading">No se pudieron cargar tus entradas.</string>
+    <string name="home_error_deleting">No se pudo eliminar la entrada.</string>
+    <string name="home_sign_in_required">Inicia sesión para ver tus entradas.</string>
+
+    <!-- ============================== -->
+    <!-- ENTRY DETAIL SCREEN            -->
+    <!-- ============================== -->
+    <string name="detail_toolbar_title_new">Nueva entrada</string>
+    <string name="detail_toolbar_title_edit">Editar entrada</string>
+    <string name="detail_title_hint">Título</string>
+    <string name="detail_content_hint">¿Qué pasó hoy?</string>
+    <string name="detail_save_button">Guardar</string>
+    <string name="detail_delete_button">Eliminar</string>
+
+    <!-- States -->
+    <string name="detail_saving_label">Guardando…</string>
+    <string name="detail_deleting_label">Eliminando…</string>
+
+    <!-- Success messages -->
+    <string name="detail_saved_message">Entrada guardada.</string>
+    <string name="detail_updated_message">Entrada actualizada.</string>
+    <string name="detail_deleted_message">Entrada eliminada.</string>
+
+    <!-- Error messages -->
+    <string name="detail_empty_title_error">El título no puede estar vacío.</string>
+    <string name="detail_auth_error">Inicia sesión para guardar tus pensamientos.</string>
+    <string name="detail_generic_error">No se pudo guardar. Intenta de nuevo.</string>
+    <string name="detail_load_error">No se pudo cargar la entrada.</string>
+    <string name="detail_not_found_error">Esta entrada ya no existe.</string>
+    <string name="detail_delete_error">No se pudo eliminar la entrada.</string>
+    <string name="detail_nothing_to_delete">No hay nada que eliminar.</string>
+
+    <!-- Delete confirmation dialog -->
+    <string name="detail_delete_confirm_title">¿Eliminar entrada?</string>
+    <string name="detail_delete_confirm_message">Esta acción no se puede deshacer.</string>
+    <string name="detail_delete_confirm_yes">Eliminar</string>
+    <string name="detail_delete_confirm_no">Cancelar</string>
+
+    <!-- ============================== -->
+    <!-- AUTH SCREEN                    -->
+    <!-- ============================== -->
     <string name="auth_title">¡Bienvenido de nuevo!</string>
     <string name="auth_subtitle">Inicia sesión para seguir escribiendo tu diario.</string>
     <string name="auth_email_hint">Correo electrónico</string>
     <string name="auth_password_hint">Contraseña</string>
     <string name="auth_login_button">Iniciar sesión</string>
     <string name="auth_register_button">Crear cuenta</string>
-    <string name="auth_loading">Conectando...</string>
+    <string name="auth_loading">Conectando…</string>
+
+    <!-- Validation errors (shown below input fields) -->
     <string name="auth_invalid_email">Ingresa un correo válido.</string>
-    <string name="auth_invalid_password">Necesitas al menos 6 caracteres.</string>
+    <string name="auth_invalid_password">La contraseña debe tener al menos 6 caracteres.</string>
+
+    <!-- Success messages -->
+    <string name="auth_success_login">¡Sesión iniciada!</string>
+    <string name="auth_success_register">¡Cuenta creada con éxito!</string>
+
+    <!-- Firebase Auth specific errors -->
+    <string name="auth_error_email_in_use">Este correo ya está registrado. Intenta iniciar sesión.</string>
+    <string name="auth_error_user_not_found">No existe una cuenta con este correo.</string>
+    <string name="auth_error_wrong_password">Contraseña incorrecta. Intenta de nuevo.</string>
+    <string name="auth_error_invalid_credential">Correo o contraseña incorrectos.</string>
+    <string name="auth_error_too_many_requests">Demasiados intentos. Espera unos minutos.</string>
+    <string name="auth_error_network">Sin conexión a internet. Verifica tu red.</string>
+    <string name="auth_error_weak_password">La contraseña es muy débil. Usa al menos 6 caracteres.</string>
     <string name="auth_generic_error">Algo salió mal. Intenta nuevamente.</string>
-    <string name="auth_success_login">Sesión iniciada.</string>
-    <string name="auth_success_register">Cuenta creada, ¡bienvenida!</string>
-    <string name="home_menu_logout">Cerrar sesión</string>
 </resources>

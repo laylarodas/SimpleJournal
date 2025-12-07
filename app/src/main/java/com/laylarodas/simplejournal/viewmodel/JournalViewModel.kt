@@ -5,11 +5,17 @@ package com.laylarodas.simplejournal.viewmodel
  * - Observa la sesión actual (AuthState) y reacciona cuando cambia.
  * - Escucha la colección en Firestore según el usuario autenticado.
  * - Expone un StateFlow con lista de entradas, loading y mensajes.
+ *
+ * MANEJO DE MENSAJES:
+ * ==================
+ * Usamos messageRes (Int?) para referenciar strings.xml en lugar de texto hardcodeado.
+ * La Activity usa getString(messageRes) para mostrar el texto localizado.
  */
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.laylarodas.simplejournal.R
 import com.laylarodas.simplejournal.auth.AuthManager
 import com.laylarodas.simplejournal.data.model.JournalEntry
 import com.laylarodas.simplejournal.data.repository.JournalRepository
@@ -73,7 +79,7 @@ class JournalViewModel(
                         it.copy(
                             entries = emptyList(),
                             isLoading = false,
-                            message = "Inicia sesión para ver tus entradas"
+                            messageRes = R.string.home_sign_in_required
                         )
                     }
                 } else {
@@ -105,12 +111,12 @@ class JournalViewModel(
                     // Mostrar spinner mientras carga la primera vez
                     _uiState.update { it.copy(isLoading = true) }
                 }
-                .catch { throwable ->
+                .catch {
                     // Error de red o permisos de Firestore
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            message = throwable.localizedMessage ?: "Error al cargar tus entradas"
+                            messageRes = R.string.home_error_loading
                         )
                     }
                 }
@@ -120,7 +126,7 @@ class JournalViewModel(
                         it.copy(
                             entries = entries,
                             isLoading = false,
-                            message = null
+                            messageRes = null
                         )
                     }
                 }
@@ -131,7 +137,7 @@ class JournalViewModel(
      * Limpia el mensaje mostrado en la UI para evitar repetir Snackbars.
      */
     fun clearMessage() {
-        _uiState.update { it.copy(message = null) }
+        _uiState.update { it.copy(messageRes = null) }
     }
 
     /**
@@ -146,12 +152,10 @@ class JournalViewModel(
             runCatching {
                 repository.deleteEntry(entryId)
             }.onSuccess {
-                _uiState.update { it.copy(message = "Entry deleted.") }
+                _uiState.update { it.copy(messageRes = R.string.home_entry_deleted) }
                 onComplete?.invoke(true)
-            }.onFailure { throwable ->
-                _uiState.update {
-                    it.copy(message = throwable.localizedMessage ?: "Could not delete entry.")
-                }
+            }.onFailure {
+                _uiState.update { it.copy(messageRes = R.string.home_error_deleting) }
                 onComplete?.invoke(false)
             }
         }
@@ -161,14 +165,14 @@ class JournalViewModel(
 /**
  * Estado de la UI de la pantalla principal.
  *
- * @property entries   Lista de entradas a mostrar (vacía si no hay o está cargando).
- * @property isLoading True mientras esperamos la primera respuesta de Firestore.
- * @property message   Mensaje temporal para mostrar en Snackbar (error o información).
+ * @property entries    Lista de entradas a mostrar (vacía si no hay o está cargando).
+ * @property isLoading  True mientras esperamos la primera respuesta de Firestore.
+ * @property messageRes ID del recurso de string para Snackbar (null = sin mensaje).
  */
 data class JournalUiState(
     val entries: List<JournalEntry> = emptyList(),
     val isLoading: Boolean = true,
-    val message: String? = null
+    val messageRes: Int? = null
 )
 
 class JournalViewModelFactory(

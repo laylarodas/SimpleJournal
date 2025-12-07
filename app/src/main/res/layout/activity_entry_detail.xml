@@ -8,7 +8,7 @@ Incluye toolbar, campos de texto y botones de acción.
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorBackground"
+    android:background="?android:attr/colorBackground"
     tools:context=".ui.detail.EntryDetailActivity">
 
     <!-- Toolbar con botón back -->

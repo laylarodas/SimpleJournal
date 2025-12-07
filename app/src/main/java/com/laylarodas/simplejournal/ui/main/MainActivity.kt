@@ -187,9 +187,9 @@ class MainActivity : AppCompatActivity() {
                     // Actualizar la lista del Adapter (DiffUtil calcula los cambios)
                     journalAdapter.submitList(state.entries)
 
-                    // Mostrar mensaje temporal si existe
-                    state.message?.let { message ->
-                        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                    // Mostrar mensaje temporal si existe (usando getString para obtener el texto)
+                    state.messageRes?.let { resId ->
+                        Snackbar.make(binding.root, getString(resId), Snackbar.LENGTH_LONG).show()
                         viewModel.clearMessage()
                     }
                 }

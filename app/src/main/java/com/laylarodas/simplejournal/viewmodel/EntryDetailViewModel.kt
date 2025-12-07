@@ -7,12 +7,20 @@ package com.laylarodas.simplejournal.viewmodel
  * - entryId = null: Modo creación (nueva entrada).
  * - entryId = "abc": Modo edición (carga entrada existente de Firestore).
  *
+ * MANEJO DE MENSAJES:
+ * ==================
+ * Usamos messageRes (Int?) en lugar de message (String?) para:
+ * - Centralizar los textos en strings.xml (fácil de traducir).
+ * - Evitar strings hardcodeados en el código.
+ * - La Activity usa getString(messageRes) para obtener el texto.
+ *
  * Valida datos, llama al repositorio y expone flags para la UI.
  */
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.laylarodas.simplejournal.R
 import com.laylarodas.simplejournal.auth.AuthManager
 import com.laylarodas.simplejournal.data.model.JournalEntry
 import com.laylarodas.simplejournal.data.repository.JournalRepository
@@ -54,7 +62,7 @@ class EntryDetailViewModel(
     private fun loadEntry(id: String) {
         val userId = authManager.currentUserId()
         if (userId == null) {
-            _uiState.update { it.copy(message = "Sign in to edit entries.") }
+            _uiState.update { it.copy(messageRes = R.string.detail_auth_error) }
             return
         }
 
@@ -78,18 +86,20 @@ class EntryDetailViewModel(
                         )
                     }
                 } else {
+                    // La entrada ya no existe (fue eliminada por otro dispositivo)
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            message = "Entry not found."
+                            messageRes = R.string.detail_not_found_error
                         )
                     }
                 }
-            }.onFailure { throwable ->
+            }.onFailure {
+                // Error de red o permisos
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        message = throwable.localizedMessage ?: "Could not load entry."
+                        messageRes = R.string.detail_load_error
                     )
                 }
             }
@@ -130,7 +140,7 @@ class EntryDetailViewModel(
         // Paso 1: Validar título
         if (current.title.isBlank()) {
             _uiState.update {
-                it.copy(showTitleError = true, message = null)
+                it.copy(showTitleError = true, messageRes = null)
             }
             return
         }
@@ -138,13 +148,13 @@ class EntryDetailViewModel(
         // Paso 2: Verificar sesión
         val userId = authManager.currentUserId()
         if (userId == null) {
-            _uiState.update { it.copy(message = "Sign in to save your thoughts.") }
+            _uiState.update { it.copy(messageRes = R.string.detail_auth_error) }
             return
         }
 
         // Paso 3-6: Guardar en Firestore
         viewModelScope.launch {
-            _uiState.update { it.copy(isSaving = true, message = null, closeScreen = false) }
+            _uiState.update { it.copy(isSaving = true, messageRes = null, closeScreen = false) }
 
             // Crear la entrada con los datos actuales
             val entry = JournalEntry(
@@ -164,18 +174,24 @@ class EntryDetailViewModel(
                     repository.addEntry(userId, entry)
                 }
             }.onSuccess {
+                // Mensaje diferente para editar vs crear
+                val successRes = if (current.isEditing) {
+                    R.string.detail_updated_message
+                } else {
+                    R.string.detail_saved_message
+                }
                 _uiState.update {
                     it.copy(
                         isSaving = false,
-                        message = if (current.isEditing) "Entry updated!" else "Entry saved!",
+                        messageRes = successRes,
                         closeScreen = true
                     )
                 }
-            }.onFailure { throwable ->
+            }.onFailure {
                 _uiState.update {
                     it.copy(
                         isSaving = false,
-                        message = throwable.localizedMessage ?: "Could not save your entry. Try again."
+                        messageRes = R.string.detail_generic_error
                     )
                 }
             }
@@ -191,12 +207,12 @@ class EntryDetailViewModel(
     fun deleteEntry() {
         val entry = originalEntry
         if (entry == null || entry.id.isBlank()) {
-            _uiState.update { it.copy(message = "Nothing to delete.") }
+            _uiState.update { it.copy(messageRes = R.string.detail_nothing_to_delete) }
             return
         }
 
         viewModelScope.launch {
-            _uiState.update { it.copy(isDeleting = true, message = null) }
+            _uiState.update { it.copy(isDeleting = true, messageRes = null) }
 
             runCatching {
                 repository.deleteEntry(entry.id)
@@ -204,15 +220,15 @@ class EntryDetailViewModel(
                 _uiState.update {
                     it.copy(
                         isDeleting = false,
-                        message = "Entry deleted.",
+                        messageRes = R.string.detail_deleted_message,
                         closeScreen = true
                     )
                 }
-            }.onFailure { throwable ->
+            }.onFailure {
                 _uiState.update {
                     it.copy(
                         isDeleting = false,
-                        message = throwable.localizedMessage ?: "Could not delete entry."
+                        messageRes = R.string.detail_delete_error
                     )
                 }
             }
@@ -220,7 +236,7 @@ class EntryDetailViewModel(
     }
 
     fun clearMessage() {
-        _uiState.update { it.copy(message = null) }
+        _uiState.update { it.copy(messageRes = null) }
     }
 
     /**
@@ -242,7 +258,7 @@ class EntryDetailViewModel(
  * @property isEditing         True si estamos editando (no creando).
  * @property showTitleError    True si el título está vacío y se intentó guardar.
  * @property shouldPopulateFields True cuando la Activity debe llenar los campos con los datos cargados.
- * @property message           Mensaje temporal para Snackbar.
+ * @property messageRes        ID del recurso de string para mostrar en Snackbar (null = sin mensaje).
  * @property closeScreen       True cuando la Activity debe cerrarse.
  */
 data class EntryDetailUiState(
@@ -254,7 +270,7 @@ data class EntryDetailUiState(
     val isEditing: Boolean = false,
     val showTitleError: Boolean = false,
     val shouldPopulateFields: Boolean = false,
-    val message: String? = null,
+    val messageRes: Int? = null,
     val closeScreen: Boolean = false
 )
 
